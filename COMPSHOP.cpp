@@ -167,7 +167,7 @@ int main() {
 
     
 
-    cout<<"-------Welcome to Computer Shop-------";
+    cout<<"-------Welcome to Computer Shop(Testing)-------";
 
     cout << "\nEnter stock for CPU: ";
     cin >> CpuStock;
