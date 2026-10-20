@@ -74,42 +74,46 @@ pipeline {
             }
         }
 
-        stage('Deploy to Minikube') {
-            steps {
-                echo 'Deploying application to the existing Minikube cluster'
+        
+stage('Deploy to Minikube') {
+    steps {
+        echo 'Deploying application to the existing Minikube cluster'
 
-                sh '''
-                    set -e
+        sh '''
+            set -e
 
-                    sudo -u ec2-user /usr/local/bin/minikube status
+            sudo -u ec2-user /usr/local/bin/minikube status
 
-                    sudo -u ec2-user /usr/local/bin/kubectl apply -f k8s/
+            sudo -u ec2-user /usr/local/bin/kubectl apply -f k8s/
 
-                    sudo -u ec2-user /usr/local/bin/kubectl set image \
-                      deployment/compshop \
-                      compshop="${IMAGE_NAME}:${BUILD_NUMBER}" \
-                      --record=false
-                '''
-            }
-        }
+            sudo -u ec2-user /usr/local/bin/kubectl set image \
+              deployment/computer-shop \
+              computer-shop="${IMAGE_NAME}:${BUILD_NUMBER}"
 
-        stage('Verify Application') {
-            steps {
-                echo 'Verifying Kubernetes deployment'
-
-                sh '''
-                    set -e
-
-                    sudo -u ec2-user /usr/local/bin/kubectl rollout status \
-                      deployment/compshop --timeout=180s
-
-                    sudo -u ec2-user /usr/local/bin/kubectl get deployments
-                    sudo -u ec2-user /usr/local/bin/kubectl get pods -o wide
-                    sudo -u ec2-user /usr/local/bin/kubectl get services
-                '''
-            }
-        }
+            sudo -u ec2-user /usr/local/bin/kubectl rollout status \
+              deployment/computer-shop --timeout=180s
+        '''
     }
+}
+
+
+        
+stage('Verify Application') {
+    steps {
+        echo 'Verifying Kubernetes deployment'
+
+        sh '''
+            set -e
+
+            sudo -u ec2-user /usr/local/bin/kubectl get deployments
+            sudo -u ec2-user /usr/local/bin/kubectl get pods -o wide
+            sudo -u ec2-user /usr/local/bin/kubectl get services
+
+            sudo -u ec2-user /usr/local/bin/kubectl rollout status \
+              deployment/computer-shop --timeout=180s
+        '''
+    }
+}
 
     post {
         success {
