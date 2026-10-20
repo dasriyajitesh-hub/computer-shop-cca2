@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Computer Shop</title>
+<style>
+:root{font-family:Arial,sans-serif;color:#172033;background:#f3f6fb}body{margin:0}
+header{background:#172554;color:white;padding:24px max(20px,calc((100% - 1000px)/2))}
+main{max-width:1000px;margin:24px auto;padding:0 16px}.summary{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:18px}
+.tile,.card{background:white;border-radius:12px;padding:16px 20px;box-shadow:0 2px 8px #17203310}
+.tile strong{display:block;font-size:1.35rem;margin-top:6px}.notice{background:#e0f2fe;padding:10px 14px;border-radius:8px;margin:8px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}.price{font-weight:bold;margin:8px 0}
+input{width:72px;padding:8px;border:1px solid #cbd5e1;border-radius:6px}button{background:#2563eb;color:white;border:0;border-radius:7px;padding:9px 12px;cursor:pointer}
+button:hover{background:#1d4ed8}.reset{background:#475569;margin-top:16px}footer{color:#64748b;padding:20px 0 32px;font-size:.9rem}
+</style></head>
+<body><header><h1>Computer Shop</h1><div>Buy computer parts, manage stock, and track your bill.</div></header>
+<main>
+{% with messages = get_flashed_messages() %}{% for message in messages %}<div class="notice">{{ message }}</div>{% endfor %}{% endwith %}
+<section class="summary"><div class="tile">Current bill<strong>₹{{ "{:,.2f}".format(total) }}</strong></div>
+<div class="tile">Products<strong>{{ items|length }}</strong></div><div class="tile">Backend<strong>C++ program</strong></div></section>
+<h2>Available parts</h2><section class="grid">
+{% for name, info in items.items() %}<article class="card"><h3>{{ name }}</h3>
+<div class="price">₹{{ "{:,.2f}".format(info.price) }} each</div><p>Stock available: <strong>{{ stock[name] }}</strong></p>
+<form method="post"><input type="hidden" name="item" value="{{ name }}">
+<label>Qty <input type="number" name="quantity" min="1" max="{{ stock[name] }}" value="1" required></label>
+<button type="submit" {% if stock[name] == 0 %}disabled{% endif %}>Purchase</button></form></article>{% endfor %}
+</section>
+<form method="post" onsubmit="return confirm('Reset all stock and clear the bill?')"><input type="hidden" name="action" value="reset"><button class="reset" type="submit">Reset shop</button></form>
+<footer>CCA 2 · CI/CD with Jenkins, Docker, and Kubernetes</footer></main></body></html>

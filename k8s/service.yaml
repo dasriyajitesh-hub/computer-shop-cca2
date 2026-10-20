@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: computer-shop
+spec:
+  type: ClusterIP
+  selector:
+    app: computer-shop
+  ports:
+  - name: http
+    port: 80
+    targetPort: 5000
